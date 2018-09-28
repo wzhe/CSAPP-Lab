@@ -172,9 +172,9 @@ int addOK(int x, int y) {
  */
 int allEvenBits(int x) {
   int a = 0x55;
-  int b = (a << 8) + a;	//0x55 55
-  int c = (b << 8) + a;	//0x55 55 55
-  int d = (c << 8) + a;	//0x55 55 55 55
+  int b = (a << 8) + a; //0x55 55
+  int c = (b << 8) + a; //0x55 55 55
+  int d = (c << 8) + a; //0x55 55 55 55
 
   return !((x & d)^d);
 }
@@ -188,9 +188,9 @@ int allEvenBits(int x) {
  */
 int allOddBits(int x) {
   int a = 0xAA;
-  int b = (a << 8) + a;	//0xAA AA
-  int c = (b << 8) + a;	//0xAA AA AA
-  int d = (c << 8) + a;	//0xAA AA AA AA
+  int b = (a << 8) + a; //0xAA AA
+  int c = (b << 8) + a; //0xAA AA AA
+  int d = (c << 8) + a; //0xAA AA AA AA
 
   return !((x & d)^d);
 }
@@ -204,9 +204,9 @@ int allOddBits(int x) {
  */
 int anyEvenBit(int x) {
   int a = 0x55;
-  int b = (a << 8) + a;	//0x55 55
-  int c = (b << 8) + a;	//0x55 55 55
-  int d = (c << 8) + a;	//0x55 55 55 55
+  int b = (a << 8) + a; //0x55 55
+  int c = (b << 8) + a; //0x55 55 55
+  int d = (c << 8) + a; //0x55 55 55 55
 
   return !!(x & d);
 }
@@ -220,9 +220,9 @@ int anyEvenBit(int x) {
  */
 int anyOddBit(int x) {
   int a = 0xAA;
-  int b = (a << 8) + a;	//0xAA AA
-  int c = (b << 8) + a;	//0xAA AA AA
-  int d = (c << 8) + a;	//0xAA AA AA AA
+  int b = (a << 8) + a; //0xAA AA
+  int c = (b << 8) + a; //0xAA AA AA
+  int d = (c << 8) + a; //0xAA AA AA AA
 
   return !!(x & d);
 }
@@ -261,7 +261,35 @@ int bitAnd(int x, int y) {
  *   Rating: 4
  */
 int bitCount(int x) {
-  return 2;
+  //数据结构习题解析第三版 邓俊辉 第一章 12题(b) Page 9
+  /*
+   * Warning: 42 operators exceeds max of 40
+   *
+  int mask0 = (0x55) | (0x55 << 8) | (0x55 << 16) | (0x55 << 24);  //0x55555555
+  int mask1 = (0x33) | (0x33 << 8) | (0x33 << 16) | (0x33 << 24);  //0x33333333
+  int mask2 = (0x0F) | (0x0F << 8) | (0x0F << 16) | (0x0F << 24);  //0x0F0F0F0F
+  int mask3 = (0xFF) |               (0xFF << 16);                 //0x00FF00FF
+  int mask4 = (0xFF) | (0xFF << 8);                                //0x0000FFFF
+  */
+
+  int a = (0x55) | (0x55 << 8);
+  int mask0 = a | (a << 16);
+  int b = (0x33) | (0x33 << 8);
+  int mask1 = b | (b << 16);
+  int c = (0x0F) | (0x0F << 8);
+  int mask2 = c | (c << 16);
+  int mask3 = (0xFF) | (0xFF << 16);
+  int mask4 = (0xFF) | (0xFF << 8);
+
+  //unsigned int n = (unsigned int)x;
+  int n = x;
+  n = (n & mask0) + (n >> 0x01  & mask0);
+  n = (n & mask1) + (n >> 0x02  & mask1);
+  n = (n & mask2) + (n >> 0x04  & mask2);
+  n = (n & mask3) + (n >> 0x08  & mask3);
+  n = (n & mask4) + (n >> 0x10  & mask4);
+
+  return n;
 }
 /* 
  * bitMask - Generate a mask consisting of all 1's 
