@@ -302,7 +302,12 @@ int bitCount(int x) {
  *   Rating: 3
  */
 int bitMask(int highbit, int lowbit) {
-  return 2;
+  int a = ~0;
+  //notice: the result of x << 32 is x
+  //        should exec x << 31 then x << 1
+  int b = a << highbit;
+  int x = (a << lowbit) & (~(b << 1));
+  return x;
 }
 /* 
  * bitMatch - Create mask indicating which bits in x match those in y
@@ -313,7 +318,10 @@ int bitMask(int highbit, int lowbit) {
  *   Rating: 1
  */
 int bitMatch(int x, int y) {
-  return 2;
+  int match0 = ~x & ~y;
+  int match1 = x & y;
+  int res = ~(~match0 & ~match1);
+  return res;
 }
 /* 
  * bitNor - ~(x|y) using only ~ and & 
