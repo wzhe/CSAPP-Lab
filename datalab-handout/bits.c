@@ -143,7 +143,8 @@ NOTES:
  *   Rating: 4
  */
 int absVal(int x) {
-  return 2;
+  int negate = !!(x & (1 << 31));
+  return (x^(~0 + !negate))+negate;
 }
 /* 
  * addOK - Determine if can compute x+y without overflow
@@ -154,14 +155,11 @@ int absVal(int x) {
  *   Rating: 3
  */
 int addOK(int x, int y) {
-
-
-
-
-
-
-
-  return 2;
+  int res = x + y;
+  int flagx = !(x & (1 << 31));
+  int flagy = !(y & (1 << 31));
+  int flagr = !(res & (1 << 31));
+  return !((flagx & flagy & !flagr) | (!flagx & !flagy & flagr));
 
 }
 /* 
@@ -173,7 +171,12 @@ int addOK(int x, int y) {
  *   Rating: 2
  */
 int allEvenBits(int x) {
-  return 2;
+  int a = 0x55;
+  int b = (a << 8) + a;	//0x55 55
+  int c = (b << 8) + a;	//0x55 55 55
+  int d = (c << 8) + a;	//0x55 55 55 55
+
+  return !((x & d)^d);
 }
 /* 
  * allOddBits - return 1 if all odd-numbered bits in word set to 1
@@ -184,7 +187,12 @@ int allEvenBits(int x) {
  *   Rating: 2
  */
 int allOddBits(int x) {
-  return 2;
+  int a = 0xAA;
+  int b = (a << 8) + a;	//0xAA AA
+  int c = (b << 8) + a;	//0xAA AA AA
+  int d = (c << 8) + a;	//0xAA AA AA AA
+
+  return !((x & d)^d);
 }
 /* 
  * anyEvenBit - return 1 if any even-numbered bit in word set to 1
@@ -195,7 +203,12 @@ int allOddBits(int x) {
  *   Rating: 2
  */
 int anyEvenBit(int x) {
-  return 2;
+  int a = 0x55;
+  int b = (a << 8) + a;	//0x55 55
+  int c = (b << 8) + a;	//0x55 55 55
+  int d = (c << 8) + a;	//0x55 55 55 55
+
+  return !!(x & d);
 }
 /* 
  * anyOddBit - return 1 if any odd-numbered bit in word set to 1
@@ -206,7 +219,12 @@ int anyEvenBit(int x) {
  *   Rating: 2
  */
 int anyOddBit(int x) {
-    return 2;
+  int a = 0xAA;
+  int b = (a << 8) + a;	//0xAA AA
+  int c = (b << 8) + a;	//0xAA AA AA
+  int d = (c << 8) + a;	//0xAA AA AA AA
+
+  return !!(x & d);
 }
 /* 
  * bang - Compute !x without using !
@@ -216,7 +234,13 @@ int anyOddBit(int x) {
  *   Rating: 4 
  */
 int bang(int x) {
-  return 2;
+  int a = (x | x >> 16);
+  int b = (a | a >> 8);
+  int c = (b | b >> 4);
+  int d = (c | c >> 2);
+  int e = (d | d >> 1) & 0x01;
+
+  return e^0x01;
 }
 /* 
  * bitAnd - x&y using only ~ and | 
@@ -226,7 +250,8 @@ int bang(int x) {
  *   Rating: 1
  */
 int bitAnd(int x, int y) {
-  return 2;
+  int a = ~x | ~y;
+  return ~a;
 }
 /*
  * bitCount - returns count of number of 1's in word
