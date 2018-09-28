@@ -331,7 +331,9 @@ int bitMatch(int x, int y) {
  *   Rating: 1
  */
 int bitNor(int x, int y) {
-  return 2;
+  //int res = ~(~(~x & ~y));
+  int res = ~x & ~y;
+  return res;
 }
 /* 
  * bitOr - x|y using only ~ and & 
@@ -341,7 +343,8 @@ int bitNor(int x, int y) {
  *   Rating: 1
  */
 int bitOr(int x, int y) {
-  return 2;
+  int res = ~(~x & ~y);
+  return res;
 }
 /*
  * bitParity - returns 1 if x contains an odd number of 0's
@@ -351,7 +354,13 @@ int bitOr(int x, int y) {
  *   Rating: 4
  */
 int bitParity(int x) {
-  return 2;
+  int a = x ^ (x >> 16);
+  int b = a ^ (a >> 8);
+  int c = b ^ (b >> 4) ;
+  int d = c ^ (c >> 2);
+  int e = (d ^ (d >> 1)) & 0x01;
+  
+  return e;
 }
 /*
  * bitReverse - Reverse bits in a 32-bit word
@@ -362,7 +371,31 @@ int bitParity(int x) {
  *   Rating: 4
  */
 int bitReverse(int x) {
-    return 2;
+  /*
+   *  Warning: 50 operators exceeds max of 45
+   *
+  int mask0 = 0xFF | 0xFF << 8;                             //0x0000FFFF
+  int mask1 = 0xFF              | 0xFF << 16;               //0x00FF00FF
+  int mask2 = 0x0F | 0x0F << 8  | 0x0F << 16 | 0x0F << 24;  //0x0F0F0F0F
+  int mask3 = 0x33 | 0x33 << 8  | 0x33 << 16 | 0x33 << 24;  //0x33333333
+  int mask4 = 0x55 | 0x55 << 8  | 0x55 << 16 | 0x55 << 24;  //0x55555555
+  */
+
+  int mask0 = (0xFF) | (0xFF << 8);
+  int mask1 = (0xFF) | (0xFF << 16);
+  int a = (0x0F) | (0x0F << 8);
+  int mask2 = a | (a << 16);
+  int b = (0x33) | (0x33 << 8);
+  int mask3 = b | (b << 16);
+  int c = (0x55) | (0x55 << 8);
+  int mask4 = c | (c << 16);
+  
+  int n = (x >> 16 & mask0) | (x << 16);
+  n = (n >> 8  & mask1) | (n << 8 & ~mask1);
+  n = (n >> 4  & mask2) | (n << 4 & ~mask2);
+  n = (n >> 2  & mask3) | (n << 2 & ~mask3);
+  n = (n >> 1  & mask4) | (n << 1 & ~mask4);
+  return n;
 }
 /* 
  * bitXor - x^y using only ~ and & 
