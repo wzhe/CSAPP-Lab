@@ -405,7 +405,10 @@ int bitReverse(int x) {
  *   Rating: 1
  */
 int bitXor(int x, int y) {
-  return 2;
+  int a = x & ~y;
+  int b = ~x & y;
+  int c = ~(~a & ~b);
+  return c;
 }
 /* 
  * byteSwap - swaps the nth byte and the mth byte
@@ -417,7 +420,12 @@ int bitXor(int x, int y) {
  *  Rating: 2
  */
 int byteSwap(int x, int n, int m) {
-    return 2;
+  int n8 = n << 3;
+  int m8 = m << 3;
+  int a = ((x >> n8) & 0xFF) << m8;
+  int b = ((x >> m8) & 0xFF) << n8;
+  int c = (x & ~(0xFF << m8) & ~(0xFF << n8));
+  return (a | b | c);
 }
 /* 
  * conditional - same as x ? y : z 
@@ -427,7 +435,10 @@ int byteSwap(int x, int n, int m) {
  *   Rating: 3
  */
 int conditional(int x, int y, int z) {
-  return 2;
+  int flag = !!x;
+  int a = y ^ z;
+  int b = a ^ ( y & (~0 + flag)) ^ ( z & (~0 + !flag));
+  return b;
 }
 /* 
  * copyLSB - set all bits of result to least significant bit of x
@@ -437,7 +448,9 @@ int conditional(int x, int y, int z) {
  *   Rating: 2
  */
 int copyLSB(int x) {
-  return 2;
+  int n = x & 0x01;
+  n = ~n + 1;
+  return n;
 }
 /*
  * distinctNegation - returns 1 if x != -x.
@@ -447,7 +460,7 @@ int copyLSB(int x) {
  *   Rating: 2
  */
 int distinctNegation(int x) {
-  return 2;
+  return !!(x+x);
 }
 /* 
  * dividePower2 - Compute x/(2^n), for 0 <= n <= 30
@@ -458,7 +471,9 @@ int distinctNegation(int x) {
  *   Rating: 2
  */
 int dividePower2(int x, int n) {
-    return 2;
+  int flag = !(x & (1 << 31));
+  x = x + (1 << (n & (~0 + flag))) + ~0;
+  return x >> n;
 }
 /* 
  * evenBits - return word with all even-numbered bits set to 1
@@ -467,7 +482,8 @@ int dividePower2(int x, int n) {
  *   Rating: 1
  */
 int evenBits(void) {
-  return 2;
+  int mask = 0x55 | 0x55 << 8 | 0x55 << 16 | 0x55 << 24;
+  return mask;
 }
 /*
  * ezThreeFourths - multiplies by 3/4 rounding toward 0,
@@ -481,7 +497,10 @@ int evenBits(void) {
  *   Rating: 3
  */
 int ezThreeFourths(int x) {
-  return 2;
+  int a = (x << 1) + x;  //a = x * 3;
+  int flag = !!(a & (0x1 << 31));
+  int b = a + (0x3 & (flag | flag << 1));
+  return b >> 2;
 }
 /* 
  * fitsBits - return 1 if x can be represented as an 
