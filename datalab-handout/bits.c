@@ -544,7 +544,11 @@ int fitsShort(int x) {
  *   Rating: 2
  */
 unsigned floatAbsVal(unsigned uf) {
-  return 2;
+  unsigned a = uf & ~(1 << 31);
+  unsigned B = (0x7F << 24) | (0x80 << 16);
+  if (((a & B) == B) && (a ^ B))
+	  return uf;
+  return a;
 }
 /* 
  * floatFloat2Int - Return bit-level equivalent of expression (int) f
