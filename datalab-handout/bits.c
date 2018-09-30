@@ -512,7 +512,10 @@ int ezThreeFourths(int x) {
  *   Rating: 2
  */
 int fitsBits(int x, int n) {
-  return 2;
+  int positive = !(x & (1 << 31));
+  int mask = ~0 << (n + ~0);
+  int a = !((x^(~0 + positive)) & mask);
+  return a;
 }
 /* 
  * fitsShort - return 1 if x can be represented as a 
@@ -523,7 +526,11 @@ int fitsBits(int x, int n) {
  *   Rating: 1
  */
 int fitsShort(int x) {
-  return 2;
+  //  Warning: 10 operators exceeds max of 8
+  int positive = !(x & (1 << 31));
+  int mask = ~0 << 15;
+  int a = !((x^(~0 + positive)) & mask);
+  return a;
 }
 /* 
  * floatAbsVal - Return bit-level equivalent of absolute value of f for
